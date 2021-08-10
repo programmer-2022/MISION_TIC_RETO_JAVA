@@ -69,7 +69,7 @@ public class PnlPayments extends javax.swing.JPanel {
     }
     public void update_payment() {
         //Start update
-        System.out.println("Start update");
+        System.out.println("cambiando git");
     }
     public void delete_payment() {
         

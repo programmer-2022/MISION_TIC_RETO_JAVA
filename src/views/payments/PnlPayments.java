@@ -68,8 +68,8 @@ public class PnlPayments extends javax.swing.JPanel {
         resetVariables();
     }
     public void update_payment() {
-        
-    
+        //Start update
+        System.out.println("Start update");
     }
     public void delete_payment() {
         

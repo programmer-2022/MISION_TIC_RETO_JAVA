@@ -44,6 +44,7 @@ public class PnlPayments extends javax.swing.JPanel {
         paymentController = new PaymentController();
         fillCustomersComboBox();
         fillPlansComboBox();
+        resetTable();
         //txtOwnerID.setVisible(false);
         //txtPaymentID.setVisible(false);
         //txtPlanID.setVisible(false);
@@ -230,6 +231,7 @@ public class PnlPayments extends javax.swing.JPanel {
         txtPlanID = new javax.swing.JTextField();
         spnPaymentSubscription = new javax.swing.JSpinner();
         txtPetID = new javax.swing.JTextField();
+        btnSearchPayment = new javax.swing.JToggleButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(950, 570));
@@ -353,6 +355,17 @@ public class PnlPayments extends javax.swing.JPanel {
 
         txtPetID.setEnabled(false);
 
+        btnSearchPayment.setBackground(new java.awt.Color(51, 51, 51));
+        btnSearchPayment.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnSearchPayment.setForeground(new java.awt.Color(204, 204, 204));
+        btnSearchPayment.setText("Search Payment");
+        btnSearchPayment.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSearchPayment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchPaymentActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -396,6 +409,8 @@ public class PnlPayments extends javax.swing.JPanel {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                     .addComponent(cbxCustomerName, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnSearchPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(txtPetID, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(18, 18, 18)
@@ -424,7 +439,8 @@ public class PnlPayments extends javax.swing.JPanel {
                     .addComponent(txtPaymentID)
                     .addComponent(txtOwnerID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtPlanID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtPetID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPetID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSearchPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -516,8 +532,14 @@ public class PnlPayments extends javax.swing.JPanel {
         findPlanByCode(valueCombo[1]);
     }//GEN-LAST:event_cbxPlanNameActionPerformed
 
+    private void btnSearchPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchPaymentActionPerformed
+        FrmSearchPayment form = new FrmSearchPayment(null, true);
+        form.setVisible(true);
+    }//GEN-LAST:event_btnSearchPaymentActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton btnSearchPayment;
     private javax.swing.JComboBox<String> cbxCustomerName;
     private javax.swing.JComboBox<String> cbxPlanName;
     private com.toedter.calendar.JDateChooser dpPayment;

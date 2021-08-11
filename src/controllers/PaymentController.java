@@ -37,4 +37,8 @@ public class PaymentController implements ICrud<PaymentVO> {
     public PaymentVO read(Object id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    public LinkedList<PaymentVO> searchByPet(String search) {
+        return dao.searchByPet(search);
+    } 
 }

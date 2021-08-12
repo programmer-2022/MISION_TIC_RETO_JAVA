@@ -1,8 +1,9 @@
 package models.vo;
 
+import java.io.Serializable;
 import java.sql.Date;
 
-public class PaymentVO {
+public class PaymentVO implements Serializable {
 
     private int id;
     private PetVO pet;

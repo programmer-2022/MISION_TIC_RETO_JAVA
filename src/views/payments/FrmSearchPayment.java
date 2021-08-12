@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.vo.PaymentVO;
 import utils.Constants;
+import utils.MySerializable;
 
 public class FrmSearchPayment extends javax.swing.JDialog {
     
@@ -35,25 +36,26 @@ public class FrmSearchPayment extends javax.swing.JDialog {
         txtPlanID = new javax.swing.JTextField();
         txtPaymentID = new javax.swing.JTextField();
         btnClearFields = new javax.swing.JButton();
+        txtEditRow = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tblPets.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "PetCode", "PetName", "Specie", "PlanName", "Subscription", "DatePayment"
+                "PetID", "PetCode", "PetName", "Specie", "PlanID", "PlanName", "PaymentID", "Subscription", "DatePayment"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -112,15 +114,26 @@ public class FrmSearchPayment extends javax.swing.JDialog {
             }
         });
 
+        txtEditRow.setBackground(new java.awt.Color(51, 51, 51));
+        txtEditRow.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        txtEditRow.setForeground(new java.awt.Color(255, 255, 255));
+        txtEditRow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/views/assets/edit_20px.png"))); // NOI18N
+        txtEditRow.setText("Edit selected row");
+        txtEditRow.setBorderPainted(false);
+        txtEditRow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        txtEditRow.setFocusPainted(false);
+        txtEditRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtEditRowActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(20, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 890, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(21, 21, 21)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -143,7 +156,12 @@ public class FrmSearchPayment extends javax.swing.JDialog {
                                 .addGap(18, 18, 18)
                                 .addComponent(txtPetID, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(txtPlanID, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(txtPlanID, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(20, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 890, Short.MAX_VALUE)
+                            .addComponent(txtEditRow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -169,14 +187,30 @@ public class FrmSearchPayment extends javax.swing.JDialog {
                     .addComponent(btnClearFields))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtEditRow, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void tblPetsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPetsMouseClicked
+        int row = tblPets.getSelectedRow();
+        String petCode = tblPets.getValueAt(row, 1).toString();
         
+        if(!petCode.equals("")) {
+            LinkedList<PaymentVO> list = paymentController.searchByPet(petCode);
+            if(list.size() > 0) {
+                
+                
+                
+                //Serializar objeto
+                MySerializable<PaymentVO> serial = new MySerializable<>();
+                //serial.writeObj(list, Constants.PATH_OUTPUT_SERIALIZABLE);
+                
+            }        
+        }
     }//GEN-LAST:event_tblPetsMouseClicked
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
@@ -250,6 +284,10 @@ public class FrmSearchPayment extends javax.swing.JDialog {
         this.clearFields();
     }//GEN-LAST:event_btnClearFieldsActionPerformed
 
+    private void txtEditRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEditRowActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtEditRowActionPerformed
+
     private void clearFields() {
         txtSearch.setText("");
         resetTable();
@@ -290,6 +328,7 @@ public class FrmSearchPayment extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel17;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tblPets;
+    private javax.swing.JButton txtEditRow;
     private javax.swing.JTextField txtPaymentID;
     private javax.swing.JTextField txtPetID;
     private javax.swing.JTextField txtPlanID;

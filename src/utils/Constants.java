@@ -69,5 +69,7 @@ public class Constants {
     //Constants jComboBox
     public static final String ITEM_SELECT = "-Select-";
     
-    
+    //Paths Serializable Object
+    public static final String PATH_OUTPUT_SERIALIZABLE = "C:/Users/Alienware/Desktop/PetOrderManagement/output/file.dat";
+        
 }

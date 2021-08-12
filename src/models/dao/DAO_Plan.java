@@ -129,4 +129,29 @@ public class DAO_Plan implements ICrud<PlanVO>{
         }
         return plan;
     }
+    
+    public PlanVO readByID(int id) {
+        xcon = MySQLConnection.getInstance();
+        PlanVO plan = new PlanVO();
+        try {
+            PreparedStatement ps = xcon.getConnection().prepareCall("{call sp_get_plan_by_id(?)}");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+              
+            while(rs.next()) {
+                plan.setId(rs.getInt(1));
+                plan.setCode(rs.getString(2));
+                plan.setName(rs.getString(3));
+                plan.setDescription(rs.getString(4));
+                plan.setPrice(rs.getFloat(5));
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Query error" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            xcon.close_connection();
+        }
+        return plan;
+    }
 }

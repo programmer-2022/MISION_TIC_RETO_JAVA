@@ -17,6 +17,7 @@ import models.vo.PetVO;
 import models.vo.PlanVO;
 import utils.Constants;
 import utils.MyDate;
+import utils.MySerializable;
 
 public class PnlPayments extends javax.swing.JPanel {
 
@@ -79,6 +80,61 @@ public class PnlPayments extends javax.swing.JPanel {
     public void findByID_payment() {
             
     }   
+    
+    public static void readObjSerializable() {
+        MySerializable<PaymentVO> serial = new MySerializable<>();
+        PaymentVO obj = serial.readObj(Constants.PATH_OUTPUT_SERIALIZABLE);
+
+        if(obj != null) {
+            txtPetID.setText(String.valueOf(obj.getPet().getId()));
+            txtPetCode.setText(obj.getPet().getCode());
+            txtPetName.setText(obj.getPet().getName());
+            txtPetSpecie.setText(obj.getPet().getSpecie());
+            txtPaymentID.setText(String.valueOf(obj.getId()));
+            spnPaymentSubscription.setValue(obj.getSubscription());
+            dpPayment.setDate(obj.getDate());
+            
+            //Search Plan
+            PlanController _planController = new PlanController();
+            PlanVO _plan = _planController.readByID(obj.getPlan().getId());
+            
+            txtPlanID.setText(String.valueOf(obj.getPlan().getId()));
+            txtPlanPrice.setText(Float.toString(_plan.getPrice()));
+            txtPlanDescription.setText(_plan.getDescription());
+            String item = _plan.getName() + "-" + _plan.getCode();
+            cbxPlanName.setSelectedItem(item);
+                        
+            //------------------------------------ SEARCH PET - OWNER -----------------
+            PetController _petController = new PetController();
+            PetVO _pet = _petController.readPetCustomerByPetID(obj.getPet().getId());
+            String datos[][] = new String[1][6];
+            
+            CustomerController _customerController = new CustomerController();
+            txtOwnerID.setText(String.valueOf(_pet.getCustomer().getId()));
+            String owner = _pet.getCustomer().getName() + " " +_pet.getCustomer().getLastname() + "-" + Integer.toString(_pet.getCustomer().getId());
+            cbxCustomerName.setSelectedItem(owner);
+            cbxCustomerName.setEnabled(false);
+            
+            if(_pet.getId() > 0) {
+                datos[0][Constants.ID_PET] = Integer.toString(_pet.getId());
+                datos[0][Constants.CODE_PET] = _pet.getCode();
+                datos[0][Constants.NAME_PET] = _pet.getName();
+                datos[0][Constants.AGE_PET] = Integer.toString(_pet.getAge());
+                datos[0][Constants.WEIGHT_PET] = Float.toString(_pet.getWeight());
+                datos[0][Constants.SPECIE_PET] = _pet.getSpecie();
+                
+            }
+            String[] columns = {
+                "PetID", "Code", "Name", "Age", "Weight", "Specie"
+            };
+            DefaultTableModel model = new DefaultTableModel(datos, columns);
+            int[] columnSize = {10, 50, 50, 50, 50, 50};
+            for(int x=0; x<columnSize.length;x++)
+                tblPets.getColumnModel().getColumn(x).setPreferredWidth(columnSize[x]);
+            tblPets.setRowHeight(30);
+            tblPets.setModel(model);
+        }
+    }
     
     private void readFields() {
         paymentID = txtPaymentID.getText().trim();
@@ -232,6 +288,7 @@ public class PnlPayments extends javax.swing.JPanel {
         spnPaymentSubscription = new javax.swing.JSpinner();
         txtPetID = new javax.swing.JTextField();
         btnSearchPayment = new javax.swing.JToggleButton();
+        btnNewPayment = new javax.swing.JToggleButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(950, 570));
@@ -298,7 +355,7 @@ public class PnlPayments extends javax.swing.JPanel {
         txtPetName.setEnabled(false);
 
         jLabel14.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel14.setText("PlanName");
+        jLabel14.setText("Name - Code");
 
         txtPetCode.setEnabled(false);
 
@@ -366,6 +423,17 @@ public class PnlPayments extends javax.swing.JPanel {
             }
         });
 
+        btnNewPayment.setBackground(new java.awt.Color(51, 51, 51));
+        btnNewPayment.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnNewPayment.setForeground(new java.awt.Color(204, 204, 204));
+        btnNewPayment.setText("New");
+        btnNewPayment.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNewPayment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewPaymentActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -407,20 +475,26 @@ public class PnlPayments extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(cbxCustomerName, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnSearchPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtPetID, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 890, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(jLabel16)
+                                            .addGap(0, 0, Short.MAX_VALUE))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(cbxCustomerName, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(btnNewPayment)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(btnSearchPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(txtPetID, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addGap(18, 18, 18)
                                     .addComponent(txtPlanID, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(18, 18, 18)
                                     .addComponent(txtOwnerID, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(18, 18, 18)
-                                    .addComponent(txtPaymentID, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 890, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel16)
+                                    .addComponent(txtPaymentID, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jLabel15)
                             .addComponent(jLabel2)
                             .addComponent(jLabel17))
@@ -434,14 +508,19 @@ public class PnlPayments extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel15)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbxCustomerName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbxCustomerName)
                     .addComponent(txtPaymentID)
-                    .addComponent(txtOwnerID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtPlanID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtPetID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSearchPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtPetID)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(btnSearchPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnNewPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtPlanID)
+                            .addComponent(txtOwnerID))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -488,7 +567,7 @@ public class PnlPayments extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtPetSpecie, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addGap(33, 33, 33))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -537,12 +616,22 @@ public class PnlPayments extends javax.swing.JPanel {
         form.setVisible(true);
     }//GEN-LAST:event_btnSearchPaymentActionPerformed
 
+    private void btnNewPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewPaymentActionPerformed
+        cbxCustomerName.setEnabled(true);
+        clearFields();
+        resetTable();
+        resetVariables();
+        fillCustomersComboBox();
+        fillPlansComboBox();
+    }//GEN-LAST:event_btnNewPaymentActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton btnNewPayment;
     private javax.swing.JToggleButton btnSearchPayment;
-    private javax.swing.JComboBox<String> cbxCustomerName;
-    private javax.swing.JComboBox<String> cbxPlanName;
-    private com.toedter.calendar.JDateChooser dpPayment;
+    private static javax.swing.JComboBox<String> cbxCustomerName;
+    private static javax.swing.JComboBox<String> cbxPlanName;
+    private static com.toedter.calendar.JDateChooser dpPayment;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
@@ -560,16 +649,16 @@ public class PnlPayments extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSpinner spnPaymentSubscription;
-    private javax.swing.JTable tblPets;
-    private javax.swing.JTextField txtOwnerID;
-    private javax.swing.JTextField txtPaymentID;
-    private javax.swing.JTextField txtPetCode;
-    private javax.swing.JTextField txtPetID;
-    private javax.swing.JTextField txtPetName;
-    private javax.swing.JTextField txtPetSpecie;
-    private javax.swing.JTextArea txtPlanDescription;
-    private javax.swing.JTextField txtPlanID;
-    private javax.swing.JTextField txtPlanPrice;
+    private static javax.swing.JSpinner spnPaymentSubscription;
+    private static javax.swing.JTable tblPets;
+    private static javax.swing.JTextField txtOwnerID;
+    private static javax.swing.JTextField txtPaymentID;
+    private static javax.swing.JTextField txtPetCode;
+    private static javax.swing.JTextField txtPetID;
+    private static javax.swing.JTextField txtPetName;
+    private static javax.swing.JTextField txtPetSpecie;
+    private static javax.swing.JTextArea txtPlanDescription;
+    private static javax.swing.JTextField txtPlanID;
+    private static javax.swing.JTextField txtPlanPrice;
     // End of variables declaration//GEN-END:variables
 }

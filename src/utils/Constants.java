@@ -70,6 +70,6 @@ public class Constants {
     public static final String ITEM_SELECT = "-Select-";
     
     //Paths Serializable Object
-    public static final String PATH_OUTPUT_SERIALIZABLE = "C:/Users/Alienware/Desktop/PetOrderManagement/output/file.dat";
+    public static final String PATH_OUTPUT_SERIALIZABLE = System.getProperty("user.dir").concat("\\output\\file.dat");
         
 }

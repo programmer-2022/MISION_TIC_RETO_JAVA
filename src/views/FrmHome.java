@@ -43,7 +43,7 @@ public class FrmHome extends JFrame {
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         pnlHome = new PnlHome();
         this.loadPanel(pnlHome);
-        setMyPanelActive("FrmHome");
+        setMyPanelActive("FrmHome");   
     }
     
     private void init_container() {

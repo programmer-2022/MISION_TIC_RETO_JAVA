@@ -2,16 +2,30 @@ package views.payments;
 
 import controllers.PaymentController;
 import java.awt.event.KeyEvent;
+import java.sql.Date;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.vo.PaymentVO;
+import models.vo.PetVO;
+import models.vo.PlanVO;
 import utils.Constants;
+import utils.MyDate;
 import utils.MySerializable;
 
 public class FrmSearchPayment extends javax.swing.JDialog {
     
     private PaymentController paymentController = null;
+    
+    String _petID = "";
+    String _petCode;
+    String _petName; 
+    String _petSpecie;
+    String  _planID;
+    String _planName; 
+    String _paymentID; 
+    String _paymentSubscription;
+    String _paymentDate;
 
     public FrmSearchPayment(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -197,22 +211,44 @@ public class FrmSearchPayment extends javax.swing.JDialog {
 
     private void tblPetsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPetsMouseClicked
         int row = tblPets.getSelectedRow();
-        String petCode = tblPets.getValueAt(row, 1).toString();
-        
-        if(!petCode.equals("")) {
-            LinkedList<PaymentVO> list = paymentController.searchByPet(petCode);
-            if(list.size() > 0) {
-                
-                
-                
-                //Serializar objeto
-                MySerializable<PaymentVO> serial = new MySerializable<>();
-                //serial.writeObj(list, Constants.PATH_OUTPUT_SERIALIZABLE);
-                
-            }        
-        }
+        _petID = tblPets.getValueAt(row, 0).toString();
+        _petCode= tblPets.getValueAt(row, 1).toString();
+        _petName = tblPets.getValueAt(row, 2).toString();
+        _petSpecie = tblPets.getValueAt(row, 3).toString();
+        _planID = tblPets.getValueAt(row, 4).toString();
+        _planName = tblPets.getValueAt(row, 5).toString();
+        _paymentID = tblPets.getValueAt(row, 6).toString();
+        _paymentSubscription = tblPets.getValueAt(row, 7).toString();
+        _paymentDate = tblPets.getValueAt(row, 8).toString();
     }//GEN-LAST:event_tblPetsMouseClicked
 
+    private PaymentVO getPayment() {
+        
+        if(_petID.equals("")) {
+            return null;
+        }
+        
+        PaymentVO _payment = new PaymentVO();
+        PetVO _pet = new PetVO();
+        PlanVO _plan = new PlanVO();
+
+        _pet.setId(Integer.parseInt(_petID));
+        _pet.setCode(_petCode);
+        _pet.setName(_petName);
+        _pet.setSpecie(_petSpecie);
+
+        _plan.setId(Integer.parseInt(_planID));
+        _plan.setName(_planName);
+
+        _payment.setId(Integer.parseInt(_paymentID));
+        _payment.setSubscription(Integer.parseInt(_paymentSubscription));
+        _payment.setDate(Date.valueOf(_paymentDate));
+
+        _payment.setPet(_pet);
+        _payment.setPlan(_plan);
+        return _payment;
+    }
+    
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         fillTable();
     }//GEN-LAST:event_btnSearchActionPerformed
@@ -225,23 +261,26 @@ public class FrmSearchPayment extends javax.swing.JDialog {
         }
         
         LinkedList<PaymentVO> paymentList = paymentController.searchByPet(search.toUpperCase());
-        String datos[][] = new String[paymentList.size()][6];
+        String datos[][] = new String[paymentList.size()][9];
         
         if(paymentList.size() > 0) {
             for (int i = 0; i < paymentList.size(); i++) {
-                datos[i][0] = paymentList.get(i).getPet().getCode();
-                datos[i][1] = paymentList.get(i).getPet().getName();
-                datos[i][2] = paymentList.get(i).getPet().getSpecie();
-                datos[i][3] = paymentList.get(i).getPlan().getName();
-                datos[i][4] = Integer.toString(paymentList.get(i).getSubscription());
-                datos[i][5] = paymentList.get(i).getDate().toString();
+                datos[i][0] = Integer.toString(paymentList.get(i).getPet().getId());
+                datos[i][1] = paymentList.get(i).getPet().getCode();
+                datos[i][2] = paymentList.get(i).getPet().getName();
+                datos[i][3] = paymentList.get(i).getPet().getSpecie();
+                datos[i][4] = Integer.toString(paymentList.get(i).getPlan().getId());
+                datos[i][5] = paymentList.get(i).getPlan().getName();
+                datos[i][6] = Integer.toString(paymentList.get(i).getId());
+                datos[i][7] = Integer.toString(paymentList.get(i).getSubscription());
+                datos[i][8] = paymentList.get(i).getDate().toString();
             }
         
             String[] columns = {
-                "PetCode", "PetName", "Specie", "PlanName", "Subscription", "PaymentDate"
+                "PetID", "PetCode", "PetName", "Specie", "PlanID", "PlanName", "PaymentID", "Subscription", "PaymentDate"
             };
             DefaultTableModel model = new DefaultTableModel(datos, columns);
-            int[] columnSize = {10, 50, 50, 50, 50, 50};
+            int[] columnSize = {10, 50, 50, 50, 50, 50, 50, 50, 50};
             for(int x=0; x<columnSize.length;x++)
                 tblPets.getColumnModel().getColumn(x).setPreferredWidth(columnSize[x]);
             tblPets.setRowHeight(30);
@@ -252,7 +291,7 @@ public class FrmSearchPayment extends javax.swing.JDialog {
     }
     
     private void resetTable() {
-        String datos[][] = new String[1][6];
+        String datos[][] = new String[1][9];
 
         for (String[] dato : datos) {
             dato[0] = "";
@@ -261,13 +300,16 @@ public class FrmSearchPayment extends javax.swing.JDialog {
             dato[3] = "";
             dato[4] = "";
             dato[5] = "";
+            dato[6] = "";
+            dato[7] = "";
+            dato[8] = "";
         }
         
         String[] columns = {
-                "PetCode", "PetName", "Specie", "PlanName", "Subscription", "PaymentDate"
+                "PetID", "PetCode", "PetName", "Specie", "PlanID", "PlanName", "PaymentID", "Subscription", "PaymentDate"
             };
         DefaultTableModel model = new DefaultTableModel(datos, columns);
-        int[] columnSize = {10, 50, 50, 50, 50, 50};
+        int[] columnSize = {10, 50, 50, 50, 50, 50, 50, 50, 50};
         for(int x=0; x<columnSize.length;x++)
             tblPets.getColumnModel().getColumn(x).setPreferredWidth(columnSize[x]);
         tblPets.setRowHeight(30);
@@ -285,7 +327,15 @@ public class FrmSearchPayment extends javax.swing.JDialog {
     }//GEN-LAST:event_btnClearFieldsActionPerformed
 
     private void txtEditRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEditRowActionPerformed
-        // TODO add your handling code here:
+        PaymentVO payment = getPayment();
+        if(payment != null) {
+            MySerializable<PaymentVO> serial = new MySerializable<>();
+            serial.writeObj(payment, Constants.PATH_OUTPUT_SERIALIZABLE);
+            this.dispose();
+            PnlPayments.readObjSerializable();
+        } else {
+            JOptionPane.showMessageDialog(this, "Select a row to edit", "Error", JOptionPane.ERROR_MESSAGE);
+        }   
     }//GEN-LAST:event_txtEditRowActionPerformed
 
     private void clearFields() {

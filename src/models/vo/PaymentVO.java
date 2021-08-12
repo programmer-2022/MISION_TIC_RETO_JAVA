@@ -5,6 +5,8 @@ import java.sql.Date;
 
 public class PaymentVO implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    
     private int id;
     private PetVO pet;
     private PlanVO plan;

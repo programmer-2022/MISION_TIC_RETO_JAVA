@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,15 +23,15 @@ public class MySerializable<T> {
         }
     }
     
-    public LinkedList<T> readObj(T object, String path) {
-        LinkedList<T> list = null;
+    public T readObj(String path) {
+        T obj = null;
         try(ObjectInputStream inFile = new ObjectInputStream(new FileInputStream(path))) {
-            list = (LinkedList<T>)inFile.readObject();
+            obj = (T)inFile.readObject();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(MySerializable.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(MySerializable.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return list;
+        return obj;
     }    
 }

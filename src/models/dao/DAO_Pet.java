@@ -172,5 +172,36 @@ public class DAO_Pet implements ICrud<PetVO> {
             xcon.close_connection();
         }
         return pet_list;
-    }    
+    }
+
+    public PetVO readPetCustomerByPetID(int id) {
+        xcon = MySQLConnection.getInstance();
+        PetVO pet = new PetVO();
+        CustomerVO customer = new CustomerVO();
+        try {
+            PreparedStatement ps = xcon.getConnection().prepareCall("{call sp_get_petCustomer_byPetID(?)}");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+                pet.setId(rs.getInt(1));
+                pet.setCode(rs.getString(2));
+                pet.setName(rs.getString(3));
+                pet.setAge(rs.getInt(4));
+                pet.setWeight(rs.getFloat(5));
+                pet.setSpecie(rs.getString(6));
+                customer.setId(rs.getInt(7));
+                customer.setName(rs.getString(8));
+                customer.setLastname(rs.getString(9));
+                pet.setCustomer(customer);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Query error" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            xcon.close_connection();
+        }
+        return pet;
+    }        
 }

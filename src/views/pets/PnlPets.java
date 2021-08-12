@@ -32,8 +32,8 @@ public class PnlPets extends javax.swing.JPanel {
         initComponents();
         customerController = new CustomerController();
         petController = new PetController();
-        txtPetID.setVisible(false);
-        txtIDCustomerQuery.setVisible(false);
+        //txtPetID.setVisible(false);
+        //txtIDCustomerQuery.setVisible(false);
         showHideOwner(false);
         fillCustomersComboBox();
         fillDataTable();
@@ -57,7 +57,7 @@ public class PnlPets extends javax.swing.JPanel {
             return;
         }
         
-        if(petController.create(getPet())) {
+        if(petController.create(getPetCreate())) {
             JOptionPane.showMessageDialog(this, Constants.MSG_SAVE_SUCESS, "Message", JOptionPane.INFORMATION_MESSAGE);
             clearFields();
         } else {
@@ -65,6 +65,7 @@ public class PnlPets extends javax.swing.JPanel {
         }        
         fillDataTable();
         resetVariables();
+        showHideOwner(false);
     }
     
     public void update_pet() {
@@ -80,7 +81,7 @@ public class PnlPets extends javax.swing.JPanel {
             return;
         }
         
-        if(petController.update(getPet())) {
+        if(petController.update(getPetUpdate())) {
             JOptionPane.showMessageDialog(this, Constants.MSG_UPDATE_SUCESS, "Message", JOptionPane.INFORMATION_MESSAGE);
             clearFields();
         } else {
@@ -181,7 +182,18 @@ public class PnlPets extends javax.swing.JPanel {
         idCustomer = "";
     }
         
-    private PetVO getPet() {
+    private PetVO getPetCreate() {
+        PetVO pet = new PetVO();
+        pet.setCode(code);
+        pet.setName(name);
+        pet.setAge(Integer.parseInt(age));
+        pet.setWeight(Float.parseFloat(weight));
+        pet.setSpecie(specie);
+        pet.setCustomer(customer);
+        return pet;
+    }
+    
+      private PetVO getPetUpdate() {
         PetVO pet = new PetVO();
         pet.setId(Integer.parseInt(petID));
         pet.setCode(code);
@@ -332,8 +344,6 @@ public class PnlPets extends javax.swing.JPanel {
             }
         });
 
-        txtPetID.setText("Id");
-
         txtWeight.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         txtAge.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -406,8 +416,6 @@ public class PnlPets extends javax.swing.JPanel {
             }
         });
 
-        txtIDCustomerQuery.setText("ID Customer");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -439,10 +447,10 @@ public class PnlPets extends javax.swing.JPanel {
                                     .addComponent(cbxSpecie, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addGroup(layout.createSequentialGroup()
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                                 .addComponent(jLabel2)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(txtPetID, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(txtPetID, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING)
                                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                                 .addComponent(jLabel9)
@@ -466,7 +474,7 @@ public class PnlPets extends javax.swing.JPanel {
                                         .addGap(0, 0, Short.MAX_VALUE))))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
-                                .addComponent(txtIDCustomerQuery, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtIDCustomerQuery, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addGap(19, 19, 19))
         );

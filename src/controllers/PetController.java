@@ -41,4 +41,8 @@ public class PetController implements ICrud<PetVO>{
     public LinkedList<PetVO> readPetsByCustomerID(int customerID) {
         return dao.readPetsByCustomerID(customerID);
     }
+    
+    public PetVO readPetCustomerByPetID(int id) {
+        return dao.readPetCustomerByPetID(id);
+    }
 }

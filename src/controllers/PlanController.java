@@ -37,4 +37,8 @@ public class PlanController implements ICrud<PlanVO>{
     public PlanVO read(Object id) {
         return dao.read(id);
     }
+    
+    public PlanVO readByID(int id) {
+        return dao.readByID(id);
+    }
 }

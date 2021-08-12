@@ -1,6 +1,5 @@
 package controllers;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import models.vo.CustomerVO;
 import models.dao.DAO_Customer;

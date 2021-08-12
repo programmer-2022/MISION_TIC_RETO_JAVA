@@ -34,8 +34,18 @@ public class PnlPlans extends javax.swing.JPanel {
         price = txtPrice.getText().trim();
     }
     
-    private PlanVO getPlan() {
+    private PlanVO getPlanCreate() {
         PlanVO plan = new PlanVO();
+        plan.setCode(code);
+        plan.setName(name);
+        plan.setDescription(description);
+        plan.setPrice(Float.parseFloat(price));
+        return plan;
+    }
+    
+    private PlanVO getPlanUpdate() {
+        PlanVO plan = new PlanVO();
+        plan.setId(Integer.parseInt(id));
         plan.setCode(code);
         plan.setName(name);
         plan.setDescription(description);
@@ -67,7 +77,7 @@ public class PnlPlans extends javax.swing.JPanel {
             return;
         }
         
-        if(planController.create(getPlan())) {
+        if(planController.create(getPlanCreate())) {
             JOptionPane.showMessageDialog(this, Constants.MSG_SAVE_SUCESS, "Message", JOptionPane.INFORMATION_MESSAGE);
             clearFields();
         } else {
@@ -85,7 +95,7 @@ public class PnlPlans extends javax.swing.JPanel {
             return;
         }
         
-        if(planController.create(getPlan())) {
+        if(planController.update(getPlanUpdate())) {
             JOptionPane.showMessageDialog(this, Constants.MSG_UPDATE_SUCESS, "Message", JOptionPane.INFORMATION_MESSAGE);
             clearFields();
         } else {
@@ -216,8 +226,6 @@ public class PnlPlans extends javax.swing.JPanel {
         txtDescription.setColumns(20);
         txtDescription.setRows(5);
         jScrollPane1.setViewportView(txtDescription);
-
-        txtID.setText("id");
 
         tblPlans.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

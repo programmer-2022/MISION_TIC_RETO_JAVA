@@ -68,6 +68,8 @@ public class PnlPayments extends javax.swing.JPanel {
         }        
         resetTable();
         resetVariables();
+        fillCustomersComboBox();
+        fillPlansComboBox();
     }
     public void update_payment() {
         //Start update

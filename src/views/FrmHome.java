@@ -643,7 +643,7 @@ public class FrmHome extends JFrame {
                 System.out.println("PANEL SETTINGS");
                 break;
             default:
-                System.out.println("PANEL HOME");
+                System.out.println("NO ACTION");
                 break;
         }
     }//GEN-LAST:event_btnAddActionPerformed
@@ -669,7 +669,7 @@ public class FrmHome extends JFrame {
                 System.out.println("PANEL SETTINGS");
                 break;
             default:
-                System.out.println("PANEL HOME");
+                System.out.println("NO ACTION");
                 break;
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
@@ -695,7 +695,7 @@ public class FrmHome extends JFrame {
                 System.out.println("PANEL SETTINGS");
                 break;
             default:
-                System.out.println("PANEL HOME");
+                System.out.println("NO ACTION");
                 break;
         }
     }//GEN-LAST:event_btnEditActionPerformed

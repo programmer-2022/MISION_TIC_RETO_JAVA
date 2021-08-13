@@ -72,13 +72,54 @@ public class PnlPayments extends javax.swing.JPanel {
         fillPlansComboBox();
     }
     public void update_payment() {
-        //Start update
-        System.out.println("cambiando git");
-    }
-    public void delete_payment() {
+        readFields();
         
-    
+        if(paymentID.equals("") || planID.equals("") || petID.equals("") || subscription.equals("") || paymentDate.equals("")) {
+            JOptionPane.showMessageDialog(this, Constants.MSG_REQUIRED, "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if(paymentController.update(getPayment())) {
+            JOptionPane.showMessageDialog(this, Constants.MSG_UPDATE_SUCESS, "Message", JOptionPane.INFORMATION_MESSAGE);
+            clearFields();
+        } else {
+            JOptionPane.showMessageDialog(this, Constants.MSG_UPDATE_ERROR, "Error", JOptionPane.ERROR_MESSAGE);
+        }        
+        resetTable();
+        resetVariables();
+        fillCustomersComboBox();
+        fillPlansComboBox();
     }
+    
+    public void delete_payment() {
+        String idPayment = txtPaymentID.getText().trim();
+        if(idPayment.equals("")) {
+            JOptionPane.showMessageDialog(this, Constants.MSG_REQUIRED, "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        int dialogResult = JOptionPane.showConfirmDialog (
+                null, 
+                "¿Are you sure to delete this record?",
+                "Warning",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+        
+        if(dialogResult == JOptionPane.YES_OPTION){
+            if(paymentController.delete(Integer.parseInt(idPayment))) {
+                JOptionPane.showMessageDialog(this, Constants.MSG_DELETE_SUCESS, "Message", JOptionPane.INFORMATION_MESSAGE);
+                clearFields();
+            } else {
+                JOptionPane.showMessageDialog(this, Constants.MSG_DELETE_ERROR, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        resetTable();
+        resetVariables();
+        fillCustomersComboBox();
+        fillPlansComboBox();
+    }
+    
     public void findByID_payment() {
             
     }   

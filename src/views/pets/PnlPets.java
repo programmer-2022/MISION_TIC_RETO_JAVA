@@ -32,8 +32,8 @@ public class PnlPets extends javax.swing.JPanel {
         initComponents();
         customerController = new CustomerController();
         petController = new PetController();
-        //txtPetID.setVisible(false);
-        //txtIDCustomerQuery.setVisible(false);
+        txtPetID.setVisible(false);
+        txtIDCustomerQuery.setVisible(false);
         showHideOwner(false);
         fillCustomersComboBox();
         fillDataTable();

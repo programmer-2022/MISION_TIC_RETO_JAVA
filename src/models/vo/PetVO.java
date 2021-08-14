@@ -14,8 +14,7 @@ public class PetVO implements Serializable {
     private String specie;
     private CustomerVO customer;
 
-    public PetVO() {
-    }
+    public PetVO() { }
     
     public int getId() {
         return id;

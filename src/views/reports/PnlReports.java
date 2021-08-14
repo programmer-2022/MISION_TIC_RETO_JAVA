@@ -35,7 +35,8 @@ public class PnlReports extends javax.swing.JPanel {
         
         ChartPanel panel = new ChartPanel(chart);
         panel.setMouseWheelEnabled(true);
-        
+        //Incrusto la informacion en el JPanel
+        pnlCanvas.removeAll();
         pnlCanvas.setLayout(new BorderLayout());
         pnlCanvas.add(panel);
         pnlCanvas.validate();

@@ -60,7 +60,7 @@ public class PnlPayments extends javax.swing.JPanel {
             return;
         }
         
-        if(paymentController.create(getPayment())) {
+        if(paymentController.create(getPaymentCreate())) {
             JOptionPane.showMessageDialog(this, Constants.MSG_SAVE_SUCESS, "Message", JOptionPane.INFORMATION_MESSAGE);
             clearFields();
         } else {
@@ -79,7 +79,7 @@ public class PnlPayments extends javax.swing.JPanel {
             return;
         }
         
-        if(paymentController.update(getPayment())) {
+        if(paymentController.update(getPaymentUpdate())) {
             JOptionPane.showMessageDialog(this, Constants.MSG_UPDATE_SUCESS, "Message", JOptionPane.INFORMATION_MESSAGE);
             clearFields();
         } else {
@@ -209,13 +209,26 @@ public class PnlPayments extends javax.swing.JPanel {
         ((JTextField)dpPayment.getDateEditor().getUiComponent()).setText("");
     }
     
-    private PaymentVO getPayment() {
+    private PaymentVO getPaymentCreate() {
         PaymentVO _paymentVO = new PaymentVO();
         PetVO _petVO = new PetVO();
         PlanVO _planVO = new PlanVO();
         _petVO.setId(Integer.parseInt(petID));
         _planVO.setId(Integer.parseInt(planID));
-        //_paymentVO.setId(Integer.parseInt(paymentID));
+        _paymentVO.setPet(_petVO);
+        _paymentVO.setPlan(_planVO);
+        _paymentVO.setSubscription(Integer.parseInt(subscription));
+        _paymentVO.setDate(Date.valueOf(paymentDate));
+        return _paymentVO;
+    }
+    
+    private PaymentVO getPaymentUpdate() {
+        PaymentVO _paymentVO = new PaymentVO();
+        PetVO _petVO = new PetVO();
+        PlanVO _planVO = new PlanVO();
+        _petVO.setId(Integer.parseInt(petID));
+        _planVO.setId(Integer.parseInt(planID));
+        _paymentVO.setId(Integer.parseInt(paymentID));
         _paymentVO.setPet(_petVO);
         _paymentVO.setPlan(_planVO);
         _paymentVO.setSubscription(Integer.parseInt(subscription));
@@ -541,7 +554,7 @@ public class PnlPayments extends javax.swing.JPanel {
                             .addComponent(jLabel15)
                             .addComponent(jLabel2)
                             .addComponent(jLabel17))
-                        .addContainerGap(46, Short.MAX_VALUE))))
+                        .addGap(46, 46, 46))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

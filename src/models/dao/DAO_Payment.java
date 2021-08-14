@@ -49,12 +49,12 @@ public class DAO_Payment implements ICrud<PaymentVO> {
     public boolean update(PaymentVO payment) {
         xcon = MySQLConnection.getInstance();
         try {
-            PreparedStatement ps = xcon.getConnection().prepareCall("{call sp_create_payment(?,?,?,?)}");
+            PreparedStatement ps = xcon.getConnection().prepareCall("{call sp_edit_payment(?,?,?,?,?)}");
             ps.setInt(1, payment.getId());
-            ps.setInt(1, payment.getPet().getId());
-            ps.setInt(2, payment.getPlan().getId());
-            ps.setInt(3, payment.getSubscription());
-            ps.setDate(4, payment.getDate());
+            ps.setInt(2, payment.getPet().getId());
+            ps.setInt(3, payment.getPlan().getId());
+            ps.setInt(4, payment.getSubscription());
+            ps.setDate(5, payment.getDate());
                         
             if(ps.executeUpdate() > 0) return true;
                         

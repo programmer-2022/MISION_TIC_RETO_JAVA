@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import utils.Constants;
 
-public class FrmHome extends JFrame {
+public final class FrmHome extends JFrame {
 
     private String panelActive;
 
@@ -23,7 +23,7 @@ public class FrmHome extends JFrame {
     private final Color CHANGE_COLOR_MENU = new Color(40, 45, 77);
         
     private JScrollPane spContainer;
-    private PnlHome pnlHome;
+    private final PnlHome pnlHome;
     private PnlCustomers pnlCustomers;
     private PnlPets pnlPets;
     private PnlPlans pnlPlans;

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-08-2021 a las 22:16:26
+-- Tiempo de generación: 14-08-2021 a las 02:51:02
 -- Versión del servidor: 10.4.20-MariaDB
 -- Versión de PHP: 8.0.8
 
@@ -284,7 +284,6 @@ CREATE TABLE `tblcustomers` (
 --
 
 INSERT INTO `tblcustomers` (`CustomerID`, `CusName`, `CusLastname`, `CusAddress`, `CusPhone`, `CusEmail`) VALUES
-(123, 'CAROLINA', 'HERRERA CARDENAS', 'CENTRO MADRID', '7454515', 'caroherr9@gmail.com'),
 (124, 'GERALDINE', 'RODRIGUEZ', 'CHAMBU ALTO', '3184542200', 'geral_68@gmail.com');
 
 -- --------------------------------------------------------
@@ -306,7 +305,7 @@ CREATE TABLE `tblpayments` (
 --
 
 INSERT INTO `tblpayments` (`PaymentID`, `TblPets_PetID`, `TblPlans_PlanID`, `PaySubscription`, `PayDate`) VALUES
-(15, 23, 9, 3, '2021-08-13');
+(18, NULL, 11, 5, '2021-08-10');
 
 -- --------------------------------------------------------
 
@@ -329,8 +328,7 @@ CREATE TABLE `tblpets` (
 --
 
 INSERT INTO `tblpets` (`PetID`, `PetCode`, `PetName`, `PetAge`, `PetWeight`, `PetSpecie`, `TblCustomers_CustomerID`) VALUES
-(23, 'COD-01', 'COQUITO LU', 3, '15.00', 'Canine', 123),
-(24, 'COD-02', 'JACKO JULI', 15, '30.45', 'Canine', 124),
+(24, 'COD-02', 'JACKO', 10, '28.00', 'Feline', 124),
 (26, 'COD-03', 'PERLA', 2, '9.00', 'Feline', 124),
 (27, 'COD-04', 'KAYSER', 3, '12.50', 'Canine', 124);
 
@@ -356,75 +354,6 @@ INSERT INTO `tblplans` (`PlanID`, `PlaCode`, `PlaName`, `PlaDescription`, `PlaPr
 (9, 'PL01', 'BIENESTAR', 'Este Plan \"bienestar\" es el más básico para tu mascota,\nno recibes ningún beneficio.', '40000.00'),
 (10, 'PL02', 'ELITE', 'Plan élite para tu mascota, beneficios en compras 30%', '65000.00'),
 (11, 'PL03', 'DIAMANTE', 'Con este plan tienes beneficios hasta del 50% en compras \nde accesorios para tu mascota', '100000.00');
-
--- --------------------------------------------------------
-
---
--- Estructura Stand-in para la vista `v_consulta1`
--- (Véase abajo para la vista actual)
---
-CREATE TABLE `v_consulta1` (
-`CustomerID` int(11)
-,`Owner` varchar(101)
-,`PetName` varchar(15)
-,`PetSpecie` varchar(6)
-);
-
--- --------------------------------------------------------
-
---
--- Estructura Stand-in para la vista `v_consulta2`
--- (Véase abajo para la vista actual)
---
-CREATE TABLE `v_consulta2` (
-`PetID` int(11)
-,`PetCode` varchar(20)
-,`PetName` varchar(15)
-,`PetAge` tinyint(3) unsigned
-,`PetWeight` decimal(5,2)
-,`PetSpecie` varchar(6)
-);
-
--- --------------------------------------------------------
-
---
--- Estructura Stand-in para la vista `v_consulta3`
--- (Véase abajo para la vista actual)
---
-CREATE TABLE `v_consulta3` (
-`CustomerID` int(11)
-,`Owner` varchar(101)
-,`PetName` varchar(15)
-,`PetAge` tinyint(3) unsigned
-,`PetSpecie` varchar(6)
-);
-
--- --------------------------------------------------------
-
---
--- Estructura para la vista `v_consulta1`
---
-DROP TABLE IF EXISTS `v_consulta1`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_consulta1`  AS SELECT `c`.`CustomerID` AS `CustomerID`, concat(`c`.`CusName`,' ',`c`.`CusLastname`) AS `Owner`, `p`.`PetName` AS `PetName`, `p`.`PetSpecie` AS `PetSpecie` FROM (`tblcustomers` `c` join `tblpets` `p` on(`p`.`TblCustomers_CustomerID` = `c`.`CustomerID`)) ;
-
--- --------------------------------------------------------
-
---
--- Estructura para la vista `v_consulta2`
---
-DROP TABLE IF EXISTS `v_consulta2`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_consulta2`  AS SELECT `tblpets`.`PetID` AS `PetID`, `tblpets`.`PetCode` AS `PetCode`, `tblpets`.`PetName` AS `PetName`, `tblpets`.`PetAge` AS `PetAge`, `tblpets`.`PetWeight` AS `PetWeight`, `tblpets`.`PetSpecie` AS `PetSpecie` FROM `tblpets` WHERE `tblpets`.`PetSpecie` = 'Canino' AND `tblpets`.`PetAge` > 5 ;
-
--- --------------------------------------------------------
-
---
--- Estructura para la vista `v_consulta3`
---
-DROP TABLE IF EXISTS `v_consulta3`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_consulta3`  AS SELECT `c`.`CustomerID` AS `CustomerID`, concat(`c`.`CusName`,' ',`c`.`CusLastname`) AS `Owner`, `p`.`PetName` AS `PetName`, `p`.`PetAge` AS `PetAge`, `p`.`PetSpecie` AS `PetSpecie` FROM (`tblcustomers` `c` join `tblpets` `p` on(`p`.`TblCustomers_CustomerID` = `c`.`CustomerID`)) WHERE `p`.`PetSpecie` = 'Felino' AND `p`.`PetAge` <= 3 ;
 
 --
 -- Índices para tablas volcadas
@@ -467,13 +396,13 @@ ALTER TABLE `tblplans`
 -- AUTO_INCREMENT de la tabla `tblpayments`
 --
 ALTER TABLE `tblpayments`
-  MODIFY `PaymentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `PaymentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `tblpets`
 --
 ALTER TABLE `tblpets`
-  MODIFY `PetID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `PetID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `tblplans`

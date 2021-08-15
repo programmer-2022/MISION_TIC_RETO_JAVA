@@ -1,12 +1,12 @@
 package models.vo;
 
 
-public class PetReportVO {
+public class PetReportBySpecieVO {
 
     private int count;
     private String specie;
         
-    public PetReportVO() { }
+    public PetReportBySpecieVO() { }
 
     public int getCount() {
         return count;

@@ -154,15 +154,18 @@ public class PnlReports extends javax.swing.JPanel {
                 break;
         }
     }
-    
-    private void exportExcel() {
-        
-    }
-    
+          
     private void getAllPetsCustomers() {
         LinkedList<PetVO> list = controller.getAllPetsCustomers();
         if(list.size() > 0) {
-            exportExcel();
+            PetsReportExcel excel = new PetsReportExcel();
+            excel.createHeaders();
+            excel.setValues(list);
+            if(excel.writeFile("my_report")) {
+                JOptionPane.showMessageDialog(null, "The file exported successfully", "Information", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Error exporting document", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
         

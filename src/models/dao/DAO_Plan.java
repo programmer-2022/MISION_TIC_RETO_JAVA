@@ -68,12 +68,11 @@ public class DAO_Plan implements ICrud<PlanVO>{
     public boolean update(PlanVO plan) {
          xcon = MySQLConnection.getInstance();
         try {
-            PreparedStatement ps = xcon.getConnection().prepareCall("{call sp_edit_plan(?,?,?,?,?)}");
+            PreparedStatement ps = xcon.getConnection().prepareCall("{call sp_edit_plan(?,?,?,?)}");
             ps.setInt(1, plan.getId());
-            ps.setString(2, plan.getCode());
-            ps.setString(3, plan.getName());
-            ps.setString(4, plan.getDescription());
-            ps.setFloat(5, plan.getPrice());
+            ps.setString(2, plan.getName());
+            ps.setString(3, plan.getDescription());
+            ps.setFloat(4, plan.getPrice());
 
             if(ps.executeUpdate() > 0) return true;
                         

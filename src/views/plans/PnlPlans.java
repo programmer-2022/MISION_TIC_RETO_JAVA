@@ -46,7 +46,6 @@ public class PnlPlans extends javax.swing.JPanel {
     private PlanVO getPlanUpdate() {
         PlanVO plan = new PlanVO();
         plan.setId(Integer.parseInt(id));
-        plan.setCode(code);
         plan.setName(name);
         plan.setDescription(description);
         plan.setPrice(Float.parseFloat(price));
@@ -90,7 +89,7 @@ public class PnlPlans extends javax.swing.JPanel {
     public void update_plan() {
         readFields();
         
-        if(code.equals("") || name.equals("") || description.equals("") || price.equals("")) {
+        if(name.equals("") || description.equals("") || price.equals("")) {
             JOptionPane.showMessageDialog(this, Constants.MSG_REQUIRED, "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }

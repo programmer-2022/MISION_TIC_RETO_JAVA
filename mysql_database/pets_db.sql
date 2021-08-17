@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-08-2021 a las 06:42:23
+-- Tiempo de generación: 17-08-2021 a las 07:27:34
 -- Versión del servidor: 10.4.20-MariaDB
 -- Versión de PHP: 8.0.8
 
@@ -20,6 +20,359 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `pets_db`
 --
+
+DELIMITER $$
+--
+-- Procedimientos
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_create_customer` (IN `pCustomerID` INT, IN `pCusName` VARCHAR(50), IN `pCusLastname` VARCHAR(50), IN `pCusAddress` VARCHAR(100), IN `pCusPhone` VARCHAR(10), IN `pCusEmail` VARCHAR(80))  BEGIN
+    INSERT INTO tblcustomers(
+        CustomerID,
+        CusName,
+        CusLastname,
+        CusAddress,
+        CusPhone,
+        CusEmail
+    )
+    VALUES(
+        pCustomerID,
+        pCusName,
+        pCusLastname,
+        pCusAddress,
+        pCusPhone,
+        pCusEmail
+    );
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_create_payment` (IN `pTblPets_PetID` INT, IN `pTblPlans_PlanID` INT, IN `pPaySubscription` TINYINT, IN `pPayDate` DATE)  BEGIN
+INSERT INTO `tblpayments`(
+    `TblPets_PetID`,
+    `TblPlans_PlanID`,
+    `PaySubscription`,
+    `PayDate`)
+VALUES (
+    `pTblPets_PetID`,
+    `pTblPlans_PlanID`,
+    `pPaySubscription`,
+    `pPayDate`
+);
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_create_pet` (IN `pPetCode` VARCHAR(20), IN `pPetName` VARCHAR(15), IN `pPetAge` TINYINT UNSIGNED, IN `pPetWeight` DECIMAL(5,2), IN `pPetSpecie` VARCHAR(6), IN `pCustomerID` INT)  BEGIN
+    INSERT INTO tblpets(
+        PetCode,
+        PetName,
+        PetAge,
+        PetWeight,
+        PetSpecie,
+        TblCustomers_CustomerID
+    )
+    VALUES(
+        pPetCode,
+        pPetName,
+        pPetAge,
+        pPetWeight,
+        pPetSpecie,
+        pCustomerID
+	);
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_create_plan` (IN `pPlaCode` VARCHAR(20), IN `pPlaName` VARCHAR(50), IN `pPlaDescription` VARCHAR(200), IN `pPlaPrice` DECIMAL(10,2))  BEGIN
+INSERT INTO `tblplans`(`PlaCode`, `PlaName`, `PlaDescription`, `PlaPrice`) VALUES (`pPlaCode`, `pPlaName`, `pPlaDescription`, `pPlaPrice`);
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_delete_customer` (IN `pCustomerID` INT)  BEGIN
+DELETE FROM `tblcustomers` WHERE CustomerID = pCustomerID;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_delete_payment` (IN `pPaymentID` INT)  BEGIN
+	DELETE FROM tblpayments
+    WHERE PaymentID=pPaymentID;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_delete_pet` (IN `pPetID` INT)  BEGIN
+DELETE FROM `tblpets` WHERE PetID=pPetID;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_delete_plan` (IN `pPlanID` INT)  BEGIN
+DELETE FROM `tblplans` WHERE PlanID=pPlanID;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_edit_customer` (IN `pCustomerID` INT, IN `pCusName` VARCHAR(50), IN `pCusLastname` VARCHAR(50), IN `pCusAddress` VARCHAR(100), IN `pCusPhone` VARCHAR(10), IN `pCusEmail` VARCHAR(80))  BEGIN
+	UPDATE tblcustomers
+    SET CusName=pCusName,
+    	CusLastname=pCusLastname,
+        CusAddress=pCusAddress,
+        CusPhone=pCusPhone,
+        CusEmail=pCusEmail
+    WHERE CustomerID = pCustomerID;        
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_edit_payment` (IN `pPaymentID` INT, IN `pTblPets_PetID` INT, IN `pTblPlans_PlanID` INT, IN `pPaySubscription` TINYINT UNSIGNED, IN `pPayDate` DATE)  BEGIN
+	UPDATE `tblpayments` 
+	SET `TblPets_PetID`=pTblPets_PetID,
+    `TblPlans_PlanID`=pTblPlans_PlanID,
+    `PaySubscription`=pPaySubscription,
+    `PayDate`=pPayDate
+    WHERE PaymentID=pPaymentID;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_edit_pet` (IN `pPetID` INT, IN `pPetCode` VARCHAR(20), IN `pPetName` VARCHAR(15), IN `pPetAge` TINYINT, IN `pPetWeight` DECIMAL(5,2), IN `pPetSpecie` VARCHAR(6), IN `pCustomerID` INT)  BEGIN
+UPDATE `tblpets` 
+SET 
+`PetCode`=pPetCode,
+`PetName`=pPetName,
+`PetAge`=pPetAge,
+`PetWeight`=pPetWeight,
+`PetSpecie`=pPetSpecie,
+`TblCustomers_CustomerID`=pCustomerID 
+WHERE PetID=pPetID;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_edit_plan` (IN `pPlanID` INT, IN `pPlaName` VARCHAR(50), IN `pPlaDescription` VARCHAR(200), IN `pPlaPrice` DECIMAL(10,2))  BEGIN
+UPDATE `tblplans`
+SET 
+`PlaName`=pPlaName,
+`PlaDescription`=pPlaDescription,
+`PlaPrice`=pPlaPrice
+WHERE PlanID=pPlanID;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getAllPetsByPlan_Report` ()  BEGIN
+	SELECT 
+    	COUNT(*) AS amount, 
+        pla.PlaName
+	FROM tblpets AS pet
+	INNER JOIN tblpayments AS pay ON pay.TblPets_PetID=pet.PetID
+	INNER JOIN tblplans AS pla ON pla.PlanID=pay.TblPlans_PlanID
+	GROUP BY pla.PlaName;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getAllPetsBySpecie_Report` ()  BEGIN 
+	SELECT COUNT(*) as amount, PetSpecie FROM tblpets
+    GROUP BY PetSpecie;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getPetsCustomers_ReportExcel` ()  BEGIN
+    SELECT 
+        c.CustomerID,
+        c.CusName, 
+        c.CusLastname,
+        c.CusAddress, 
+        c.CusPhone, 
+        c.CusEmail,
+        p.PetCode,
+        p.PetName,
+        p.PetAge,
+        p.PetWeight, 
+        p.PetSpecie
+    FROM tblpets AS p INNER JOIN tblcustomers AS c ON c.CustomerID=p.TblCustomers_CustomerID;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_all_customers` ()  BEGIN
+	SELECT CustomerID, CusName, CusLastname, CusPhone, CusAddress, CusEmail 
+	FROM tblcustomers;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_all_pets` ()  BEGIN
+SELECT `PetID`, `PetCode`, `PetName`, `PetAge`, `PetWeight`, `PetSpecie`, `TblCustomers_CustomerID` FROM `tblpets`;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_all_pets_customer` ()  BEGIN
+SELECT p.`PetID`, p.`PetCode`, p.`PetName`, p.`PetAge`, p.`PetWeight`, p.`PetSpecie`, c.`CustomerID`, c.CusName, c.CusLastname FROM `tblpets` AS p INNER JOIN tblcustomers AS c ON c.CustomerID = p.TblCustomers_CustomerID;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_all_plans` ()  BEGIN
+SELECT 
+    `PlanID`, 
+    `PlaCode`, 
+    `PlaName`, 
+    `PlaDescription`, 
+    `PlaPrice` 
+FROM `tblplans`;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_customer` (IN `pCustomerID` INT)  BEGIN
+	SELECT 
+    	CustomerID,
+    	CusName, 
+        CusLastname, 
+        CusAddress, 
+        CusPhone,        
+        CusEmail 
+	FROM tblcustomers WHERE CustomerID=pCustomerID;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_payment_by_pet` (IN `pPetCode` VARCHAR(20))  BEGIN
+SELECT
+	pet.PetID,
+	pet.PetCode, 
+    pet.PetName, 
+    pet.PetSpecie,
+    pla.PlanID,
+    pla.PlaName,
+    pay.PaymentID,
+    pay.PaySubscription,
+    pay.PayDate
+FROM tblpets AS pet 
+INNER JOIN tblpayments AS pay ON pay.TblPets_PetID=pet.PetID
+INNER JOIN tblplans AS pla ON pla.PlanID=pay.TblPlans_PlanID
+WHERE pet.PetCode LIKE CONCAT('%', pPetCode, '%');
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_pet` (IN `pPetCode` VARCHAR(20))  BEGIN
+SELECT 
+	p.`PetID`,
+    p.`PetCode`, 
+    p.`PetName`, 
+    p.`PetAge`, 
+    p.`PetWeight`, 
+    p.`PetSpecie`, 
+    c.`CustomerID`, 
+    c.`CusName`, 
+    c.`CusLastname`
+FROM `tblpets` AS p
+INNER JOIN tblcustomers AS c
+ON c.CustomerID=p.TblCustomers_CustomerID
+WHERE PetCode=pPetCode;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_petCustomer_byPetID` (IN `pPetID` INT)  BEGIN
+SELECT 
+	p.`PetID`, 
+    p.`PetCode`, 
+    p.`PetName`, 
+    p.`PetAge`, 
+    p.`PetWeight`, 
+    p.`PetSpecie`,
+    c.CustomerID,
+    c.CusName,
+    c.CusLastname
+FROM `tblpets` AS p 
+INNER JOIN tblcustomers AS c 
+ON c.CustomerID=p.TblCustomers_CustomerID
+WHERE p.PetID=pPetID;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_pet_customerID` (IN `pCustomerID` INT)  BEGIN
+SELECT 
+	p.`PetID`, 
+    p.`PetCode`, 
+    p.`PetName`, 
+    p.`PetAge`, 
+    p.`PetWeight`, 
+    p.`PetSpecie`
+FROM `tblpets` AS p 
+INNER JOIN tblcustomers AS c 
+ON c.CustomerID = p.TblCustomers_CustomerID
+WHERE c.CustomerID=pCustomerID;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_plan` (IN `pPlaCode` VARCHAR(20))  BEGIN
+SELECT 
+	`PlanID`, 
+    `PlaCode`, 
+    `PlaName`, 
+    `PlaDescription`, 
+    `PlaPrice` 
+FROM `tblplans` WHERE PlaCode=pPlaCode;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_plan_by_id` (IN `pPlanID` INT)  BEGIN
+SELECT 
+	`PlanID`, 
+    `PlaCode`, 
+    `PlaName`, 
+    `PlaDescription`, 
+    `PlaPrice` 
+FROM `tblplans` WHERE PlanID=pPlanID;
+END$$
+
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tblcustomers`
+--
+
+CREATE TABLE `tblcustomers` (
+  `CustomerID` int(11) NOT NULL,
+  `CusName` varchar(50) NOT NULL,
+  `CusLastname` varchar(50) NOT NULL,
+  `CusAddress` varchar(100) NOT NULL,
+  `CusPhone` varchar(10) NOT NULL,
+  `CusEmail` varchar(80) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `tblcustomers`
+--
+
+INSERT INTO `tblcustomers` (`CustomerID`, `CusName`, `CusLastname`, `CusAddress`, `CusPhone`, `CusEmail`) VALUES
+(124, 'GERALDINE', 'RODRIGUEZ', 'CHAMBU ALTO', '3184542200', 'geral_68@gmail.com'),
+(125, 'CARLOS', 'NOGUERA', 'VILLA LUCIA', '7404050', 'noguera@latinmail.com'),
+(126, 'WILSON', 'HERNANDO', 'MARILUZ ALTO', '3104567788', 'wilwil@gmail.es'),
+(127, 'SOFIA', 'CARDENAS', 'AV 44 NO.33-44', '3104445577', 'sofip666@hotmail.com');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tblpayments`
+--
+
+CREATE TABLE `tblpayments` (
+  `PaymentID` int(11) NOT NULL,
+  `TblPets_PetID` int(11) DEFAULT NULL,
+  `TblPlans_PlanID` int(11) DEFAULT NULL,
+  `PaySubscription` tinyint(3) UNSIGNED NOT NULL,
+  `PayDate` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `tblpayments`
+--
+
+INSERT INTO `tblpayments` (`PaymentID`, `TblPets_PetID`, `TblPlans_PlanID`, `PaySubscription`, `PayDate`) VALUES
+(18, 24, 10, 6, '2021-08-11'),
+(20, 26, 10, 2, '2021-08-01'),
+(22, 29, 10, 4, '2021-08-03'),
+(23, 30, 10, 2, '2021-08-18'),
+(24, 31, 9, 4, '2021-08-04'),
+(25, 32, 9, 2, '2021-08-04'),
+(26, 34, 11, 6, '2021-08-05'),
+(27, 33, 11, 8, '2021-08-06');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tblpets`
+--
+
+CREATE TABLE `tblpets` (
+  `PetID` int(11) NOT NULL,
+  `PetCode` varchar(20) NOT NULL,
+  `PetName` varchar(15) NOT NULL,
+  `PetAge` tinyint(3) UNSIGNED NOT NULL,
+  `PetWeight` decimal(5,2) NOT NULL,
+  `PetSpecie` varchar(6) NOT NULL,
+  `TblCustomers_CustomerID` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `tblpets`
+--
+
+INSERT INTO `tblpets` (`PetID`, `PetCode`, `PetName`, `PetAge`, `PetWeight`, `PetSpecie`, `TblCustomers_CustomerID`) VALUES
+(24, 'COD-02', 'JACKO', 10, '28.00', 'Canine', 124),
+(26, 'COD-03', 'PERLA', 2, '9.00', 'Feline', 124),
+(27, 'COD-04', 'KAYSER', 3, '12.50', 'Canine', 124),
+(29, 'COD-10', 'MILU', 1, '10.50', 'Canine', 127),
+(30, 'COD-15', 'PAQUITO', 4, '11.00', 'Feline', 127),
+(31, 'COD-35', 'OLIVER', 3, '15.00', 'Feline', 126),
+(32, 'COD-75', 'BORIS', 7, '22.00', 'Feline', 126),
+(33, 'COD-44', 'LUISITO', 3, '4.00', 'Canine', 125),
+(34, 'COD-5050', 'COQUI', 8, '13.20', 'Canine', 125);
 
 -- --------------------------------------------------------
 
@@ -49,6 +402,28 @@ INSERT INTO `tblplans` (`PlanID`, `PlaCode`, `PlaName`, `PlaDescription`, `PlaPr
 --
 
 --
+-- Indices de la tabla `tblcustomers`
+--
+ALTER TABLE `tblcustomers`
+  ADD PRIMARY KEY (`CustomerID`);
+
+--
+-- Indices de la tabla `tblpayments`
+--
+ALTER TABLE `tblpayments`
+  ADD PRIMARY KEY (`PaymentID`),
+  ADD KEY `tblpayments_ibfk_1` (`TblPets_PetID`),
+  ADD KEY `tblpayments_ibfk_2` (`TblPlans_PlanID`);
+
+--
+-- Indices de la tabla `tblpets`
+--
+ALTER TABLE `tblpets`
+  ADD PRIMARY KEY (`PetID`),
+  ADD UNIQUE KEY `PetCode` (`PetCode`),
+  ADD KEY `tblpets_ibfk_1` (`TblCustomers_CustomerID`);
+
+--
 -- Indices de la tabla `tblplans`
 --
 ALTER TABLE `tblplans`
@@ -60,10 +435,39 @@ ALTER TABLE `tblplans`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `tblpayments`
+--
+ALTER TABLE `tblpayments`
+  MODIFY `PaymentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
+-- AUTO_INCREMENT de la tabla `tblpets`
+--
+ALTER TABLE `tblpets`
+  MODIFY `PetID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+
+--
 -- AUTO_INCREMENT de la tabla `tblplans`
 --
 ALTER TABLE `tblplans`
   MODIFY `PlanID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `tblpayments`
+--
+ALTER TABLE `tblpayments`
+  ADD CONSTRAINT `tblpayments_ibfk_1` FOREIGN KEY (`TblPets_PetID`) REFERENCES `tblpets` (`PetID`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `tblpayments_ibfk_2` FOREIGN KEY (`TblPlans_PlanID`) REFERENCES `tblplans` (`PlanID`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `tblpets`
+--
+ALTER TABLE `tblpets`
+  ADD CONSTRAINT `tblpets_ibfk_1` FOREIGN KEY (`TblCustomers_CustomerID`) REFERENCES `tblcustomers` (`CustomerID`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

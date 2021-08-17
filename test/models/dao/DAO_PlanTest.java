@@ -7,17 +7,19 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.mockito.Mockito;
 
 public class DAO_PlanTest {
     
     private DAO_Plan dao;
+    private PlanVO plan;
     
     public DAO_PlanTest() { }
     
     @BeforeClass
     public static void setUpClass() {
         System.out.println("*************************************************");
-        System.out.println("* Test Clientes inicializado");
+        System.out.println("* Test Modelo-Planes inicializado");
         System.out.println("*************************************************");
         System.out.println();
     }
@@ -26,13 +28,18 @@ public class DAO_PlanTest {
     public static void tearDownClass() {
         System.out.println();
         System.out.println("*************************************************");
-        System.out.println("* Test Clientes finalizado");
+        System.out.println("* Test Modelo-Planes finalizado");
         System.out.println("*************************************************");
     }
     
     @Before
     public void setUp() {
-        dao = new DAO_Plan();
+        dao = Mockito.mock(DAO_Plan.class);
+        plan = new PlanVO();
+        plan.setCode("PL01");
+        plan.setName("Bienestar");
+        plan.setDescription("El plan mas basico");
+        plan.setPrice(1000f);
     }
     
     @After
@@ -43,36 +50,30 @@ public class DAO_PlanTest {
 
     @Test
     public void testCreate() {
-        System.out.println("Test create() - el codigo del plan ya existe en la base de datos");
-        PlanVO plan = new PlanVO();
-        plan.setCode("PL01");
-        plan.setName("Bienestar");
-        plan.setDescription("El plan mas basico");
-        plan.setPrice(1000f);
-        assertFalse(dao.create(plan));
+        System.out.println("Test create() - se creó un plan");
+        Mockito.when(dao.create(plan)).thenReturn(Boolean.TRUE);
+        assertTrue(dao.create(plan));
     }
 
     @Test
     public void testUpdate() {
-        System.out.println("Test Update() - Actualizar el nombre, description y precio del plan con el id 18");
-        PlanVO plan = new PlanVO();
-        plan.setId(18);
-        plan.setName("TEST PLAN");
-        plan.setDescription("Descripcion de prueba del test");
-        plan.setPrice(1000f);
+        System.out.println("Test Update() - Actualizar el plan");
+        Mockito.when(dao.update(plan)).thenReturn(Boolean.TRUE);
         assertTrue(dao.update(plan));
     }
 
     @Test
     public void testDelete() {
-        System.out.println("Test Delete() - Eliminar un ID inexistente en la base de datos");
-        assertFalse(dao.delete("PL0001"));
+        System.out.println("Test Delete() - Eliminar un ID en la base de datos");
+        Mockito.when(dao.delete(0)).thenReturn(Boolean.TRUE);
+        assertTrue(dao.delete(0));
     }
 
     @Test
     public void testRead() {
         System.out.println("Test Read() - Obtener un plan registrado en la base de datos");
-        PlanVO plan = dao.read("PL01");
-        assertTrue(plan != null);
+        String code = "PL01";
+        Mockito.when(dao.read(code)).thenReturn(new PlanVO());
+        assertTrue(dao.read(code) instanceof PlanVO);
     }
 }

@@ -46,10 +46,10 @@ public class PnlPayments extends javax.swing.JPanel {
         fillCustomersComboBox();
         fillPlansComboBox();
         resetTable();
-        //txtOwnerID.setVisible(false);
-        //txtPaymentID.setVisible(false);
-        //txtPlanID.setVisible(false);
-        //txtPetID.setVisible(false);
+        txtOwnerID.setVisible(false);
+        txtPaymentID.setVisible(false);
+        txtPlanID.setVisible(false);
+        txtPetID.setVisible(false);
     }
     
     public void create_payment() {

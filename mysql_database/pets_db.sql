@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-08-2021 a las 02:51:02
+-- Tiempo de generación: 17-08-2021 a las 06:07:29
 -- Versión del servidor: 10.4.20-MariaDB
 -- Versión de PHP: 8.0.8
 
@@ -129,7 +129,7 @@ SET
 WHERE PetID=pPetID;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_edit_plan` (IN `pPlanID` INT, IN `pPlaCode` VARCHAR(20), IN `pPlaName` VARCHAR(50), IN `pPlaDescription` VARCHAR(200), IN `pPlaPrice` DECIMAL(10,2))  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_edit_plan` (IN `pPlanID` INT, IN `pPlaName` VARCHAR(50), IN `pPlaDescription` VARCHAR(200), IN `pPlaPrice` DECIMAL(10,2))  BEGIN
 UPDATE `tblplans`
 SET 
 `PlaName`=pPlaName,
@@ -138,9 +138,35 @@ SET
 WHERE PlanID=pPlanID;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getAllPetsBySpecie` ()  BEGIN 
-	SELECT COUNT(*), PetSpecie FROM tblpets
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getAllPetsByPlan_Report` ()  BEGIN
+	SELECT 
+    	COUNT(*) AS amount, 
+        pla.PlaName
+	FROM tblpets AS pet
+	INNER JOIN tblpayments AS pay ON pay.TblPets_PetID=pet.PetID
+	INNER JOIN tblplans AS pla ON pla.PlanID=pay.TblPlans_PlanID
+	GROUP BY pla.PlaName;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getAllPetsBySpecie_Report` ()  BEGIN 
+	SELECT COUNT(*) as amount, PetSpecie FROM tblpets
     GROUP BY PetSpecie;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getPetsCustomers_ReportExcel` ()  BEGIN
+    SELECT 
+        c.CustomerID,
+        c.CusName, 
+        c.CusLastname,
+        c.CusAddress, 
+        c.CusPhone, 
+        c.CusEmail,
+        p.PetCode,
+        p.PetName,
+        p.PetAge,
+        p.PetWeight, 
+        p.PetSpecie
+    FROM tblpets AS p INNER JOIN tblcustomers AS c ON c.CustomerID=p.TblCustomers_CustomerID;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_all_customers` ()  BEGIN
@@ -305,7 +331,9 @@ CREATE TABLE `tblpayments` (
 --
 
 INSERT INTO `tblpayments` (`PaymentID`, `TblPets_PetID`, `TblPlans_PlanID`, `PaySubscription`, `PayDate`) VALUES
-(18, NULL, 11, 5, '2021-08-10');
+(18, 24, 11, 5, '2021-08-10'),
+(20, 26, 10, 2, '2021-08-01'),
+(21, 27, 10, 10, '2021-08-02');
 
 -- --------------------------------------------------------
 
@@ -328,7 +356,7 @@ CREATE TABLE `tblpets` (
 --
 
 INSERT INTO `tblpets` (`PetID`, `PetCode`, `PetName`, `PetAge`, `PetWeight`, `PetSpecie`, `TblCustomers_CustomerID`) VALUES
-(24, 'COD-02', 'JACKO', 10, '28.00', 'Feline', 124),
+(24, 'COD-02', 'JACKO', 10, '28.00', 'Canine', 124),
 (26, 'COD-03', 'PERLA', 2, '9.00', 'Feline', 124),
 (27, 'COD-04', 'KAYSER', 3, '12.50', 'Canine', 124);
 
@@ -353,7 +381,8 @@ CREATE TABLE `tblplans` (
 INSERT INTO `tblplans` (`PlanID`, `PlaCode`, `PlaName`, `PlaDescription`, `PlaPrice`) VALUES
 (9, 'PL01', 'BIENESTAR', 'Este Plan \"bienestar\" es el más básico para tu mascota,\nno recibes ningún beneficio.', '40000.00'),
 (10, 'PL02', 'ELITE', 'Plan élite para tu mascota, beneficios en compras 30%', '65000.00'),
-(11, 'PL03', 'DIAMANTE', 'Con este plan tienes beneficios hasta del 50% en compras \nde accesorios para tu mascota', '100000.00');
+(11, 'PL03', 'DIAMANTE', 'Con este plan tienes beneficios hasta del 50% en compras \nde accesorios para tu mascota', '100000.00'),
+(18, 'PL1000', 'TEST PLAN', 'Descripcion de prueba del test', '1000.00');
 
 --
 -- Índices para tablas volcadas
@@ -396,7 +425,7 @@ ALTER TABLE `tblplans`
 -- AUTO_INCREMENT de la tabla `tblpayments`
 --
 ALTER TABLE `tblpayments`
-  MODIFY `PaymentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `PaymentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de la tabla `tblpets`
@@ -408,7 +437,7 @@ ALTER TABLE `tblpets`
 -- AUTO_INCREMENT de la tabla `tblplans`
 --
 ALTER TABLE `tblplans`
-  MODIFY `PlanID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `PlanID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Restricciones para tablas volcadas
